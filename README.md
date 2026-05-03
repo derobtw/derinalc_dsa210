@@ -280,13 +280,59 @@ Computer Science and Engineering
 - Statistical Hypothesis Testing  
 - README and repository organization  
 
-**Next Step:**
-- Machine Learning modeling and comparative evaluation
+## Machine Learning Methods
 
+In this stage, machine learning methods were applied to predict used-car prices using the cleaned dataset. The main objective was to compare a **baseline model** built only with structural vehicle characteristics and an **extended model** that additionally included the cosmetic variable **color**.
+
+Two model families were used:
+
+* **Linear Regression** as a benchmark model
+* **Random Forest Regressor** as the main non-linear machine learning model
+
+The target variable was the log-transformed price, and model performance was evaluated on a held-out test set using:
+
+* **MAE (Mean Absolute Error)**
+* **RMSE (Root Mean Squared Error)**
+* **R²**
+
+### Feature Sets
+
+**Baseline model features:**
+- year
+- log-transformed mileage
+- brand
+- series group
+- fuel type
+- transmission
+- body type group
+- seller type
+
+**Extended model features:**
+- all baseline features
+- color group
+
+### Results
+
+| Model | MAE | RMSE | R² |
+|------|------:|------:|------:|
+| Linear Regression - Baseline | 110,409.67 | 228,834.96 | 0.8625 |
+| Linear Regression - Extended | 110,484.17 | 228,551.40 | 0.8628 |
+| Random Forest - Baseline | 122,067.09 | 257,389.30 | 0.8260 |
+| Random Forest - Extended | 129,582.56 | 274,702.56 | 0.8018 |
+
+### Interpretation
+
+The machine learning results show that the **Linear Regression models outperformed the Random Forest models** on this dataset. The best overall performance was obtained by the **Linear Regression Extended** model in terms of RMSE and R², although the improvement over the baseline model was extremely small.
+
+Adding color to the Linear Regression model produced only a **marginal improvement** in predictive performance. The increase in R² was minimal, and the difference in error metrics was very small. This suggests that color may provide a small amount of additional information, but its practical contribution to price prediction remains limited.
+
+For the Random Forest models, adding color did not improve performance. In fact, the extended Random Forest model performed worse than the baseline version. This indicates that color does not provide stable predictive value in the tree-based model under the current feature representation and parameter settings.
+
+Overall, the ML results are consistent with the earlier statistical findings: **color may be statistically detectable, but its practical value in explaining or predicting used-car prices is weak compared with structural variables** such as brand, year, mileage, transmission, fuel type, and body type.
 ---
 
 ## Last Updated
 
-April 2026
+May 2026
 
 *This project was conducted for the Sabancı University DSA210 course.*
