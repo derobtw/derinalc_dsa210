@@ -330,7 +330,8 @@ For the Random Forest models, adding color did not improve performance. In fact,
 
 Overall, the ML results are consistent with the earlier statistical findings: **color may be statistically detectable, but its practical value in explaining or predicting used-car prices is weak compared with structural variables** such as brand, year, mileage, transmission, fuel type, and body type.
 ---
-
+![Feature Importance](outputs/figures/17_feature_importance.png)
+![Counterfactual Color Analysis](outputs/figures/18_counterfactual_color_analysis.png)
 ## Last Updated
 
 May 2026
