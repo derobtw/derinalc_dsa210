@@ -6,7 +6,7 @@
 
 Used-car prices are affected by many structural vehicle characteristics such as brand, series, model year, mileage, fuel type, transmission, and body type. However, cosmetic attributes such as color are also widely believed to influence resale value.
 
-The goal of this project is to move beyond consumer intuition and examine whether cosmetic attributes truly have a meaningful effect on used-car prices once the main structural factors are taken into account. Using a real-world dataset of Turkish second-hand car listings, this project applies the data science pipeline from data collection and cleaning to exploratory analysis and formal hypothesis testing.
+The goal of this project is to move beyond consumer intuition and examine whether cosmetic attributes truly have a meaningful effect on used-car prices once the main structural factors are taken into account. Using a real-world dataset of Turkish second-hand car listings, this project applies the data science pipeline from data collection and cleaning to exploratory analysis, formal hypothesis testing, and machine learning.
 
 ---
 
@@ -14,10 +14,10 @@ The goal of this project is to move beyond consumer intuition and examine whethe
 
 ### 2.1 Data Sources
 
-* **Kaggle Used Car Prices Dataset (arabam.com-based)**
+* **Kaggle Used Car Prices Dataset (arabam.com-based)**  
   → Provides listing-level data such as price, brand, series, model, year, mileage, fuel type, transmission, body type, color, engine volume, engine power, and seller type
 
-* **Official 2026 Motor Vehicle Tax (MTV) tariff from GİB**
+* **Official 2026 Motor Vehicle Tax (MTV) tariff from GİB**  
   → Used as an external enrichment source to construct an estimated ownership-cost related variable
 
 ---
@@ -141,8 +141,6 @@ Estimated MTV values were assigned to **46,947 vehicles**.
 
 To validate the findings from exploratory data analysis, formal statistical tests were conducted.
 
----
-
 ### Test 1: Raw Price Differences Across Color Groups
 
 - **Null Hypothesis ($H_0$):** There is no significant difference in price distributions across color groups.  
@@ -154,8 +152,6 @@ To validate the findings from exploratory data analysis, formal statistical test
 
 **Conclusion:**  
 The null hypothesis is rejected. Raw price distributions differ significantly across color groups. However, this result does not control for structural vehicle characteristics.
-
----
 
 ### Test 2: Additional Explanatory Power of Color After Controlling for Structural Factors
 
@@ -172,29 +168,72 @@ The null hypothesis is rejected. Raw price distributions differ significantly ac
 **Conclusion:**  
 The null hypothesis is rejected statistically. Color does add explanatory power after controlling for structural factors. However, the improvement in model fit is extremely small, which indicates that the practical contribution of color is very limited.
 
----
-
 ### Overall Interpretation
 
 The statistical results suggest that color is **statistically significant** but **substantively weak**. In other words, although color is not completely irrelevant, its contribution to explaining used-car prices is tiny compared with major structural variables such as brand, year, mileage, transmission, fuel type, and body type.
 
 ---
 
-## 5. Key Findings
+## 5. Machine Learning Methods
+
+In the machine learning stage, models were used to predict used-car prices from the cleaned dataset. The main purpose was to compare a **baseline model** built only with structural vehicle characteristics and an **extended model** that additionally included the cosmetic variable **color**.
+
+Two model families were used:
+
+* **Linear Regression** as a benchmark model
+* **Random Forest Regressor** as the main non-linear machine learning model
+
+The target variable was the log-transformed price, and performance was evaluated on a held-out test set using:
+
+* **MAE (Mean Absolute Error)**
+* **RMSE (Root Mean Squared Error)**
+* **R²**
+
+### Feature Sets
+
+**Baseline model features:**
+- year
+- log-transformed mileage
+- brand
+- series group
+- fuel type
+- transmission
+- body type group
+- seller type
+
+**Extended model features:**
+- all baseline features
+- color group
+
+### ML Results
+
+| Model | MAE | RMSE | R² |
+|------|------:|------:|------:|
+| Linear Regression - Baseline | 110,409.67 | 228,834.96 | 0.8625 |
+| Linear Regression - Extended | 110,484.17 | 228,551.40 | 0.8628 |
+| Random Forest - Baseline | 122,067.09 | 257,389.30 | 0.8260 |
+| Random Forest - Extended | 129,582.56 | 274,702.56 | 0.8018 |
+
+### Interpretation of ML Results
+
+The machine learning results show that the **Linear Regression models outperformed the Random Forest models** on this dataset. The best overall performance was obtained by the **Linear Regression Extended** model in terms of RMSE and R², although the improvement over the baseline model was extremely small.
+
+Adding color to the Linear Regression model produced only a **marginal improvement** in predictive performance. The increase in R² was minimal, and the difference in error metrics was very small. This suggests that color may provide a small amount of additional information, but its practical contribution to price prediction remains limited.
+
+For the Random Forest models, adding color did not improve performance. In fact, the extended Random Forest model performed worse than the baseline version. This indicates that color does not provide stable predictive value in the tree-based model under the current feature representation and parameter settings.
+
+Overall, the ML results are consistent with the earlier statistical findings: **color may be statistically detectable, but its practical value in explaining or predicting used-car prices is weak compared with structural variables** such as brand, year, mileage, transmission, fuel type, and body type.
+
+---
+
+## 6. Key Findings
 
 * Used-car prices are strongly shaped by **structural vehicle characteristics**
 * Raw price differences across colors are statistically significant
 * After controlling for structural factors, color remains statistically significant
 * However, the practical effect of color is **extremely small**
-* The results support the expectation that cosmetic attributes have only a **limited marginal role** in price formation
-
----
-
-## 6. Interpretation
-
-This project shows that cosmetic features such as color may influence used-car prices at a statistical level, but they do not meaningfully change the overall explanatory structure of the pricing model.
-
-The increase in adjusted R² after adding color was only **0.00014**, which means that structural variables dominate price formation. Therefore, while consumers may perceive color as important, the market appears to price used cars primarily based on core characteristics such as brand, age, mileage, fuel type, transmission, and body type.
+* In the ML stage, adding color produced at most a marginal improvement
+* Structural variables remain the dominant drivers of prediction performance
 
 ---
 
@@ -203,8 +242,11 @@ The increase in adjusted R² after adding color was only **0.00014**, which mean
 ```text
 derinalc_dsa210/
 │
-├── DATA_COLLECTITON_EDA_HYPOTHESIS_TEST.ipynb   # Main notebook
+├── CAR_DATA.csv
+├── DATA_COLLECTITON_EDA_HYPOTHESIS_TEST.ipynb
+├── ML_METHODS_PRICE_PREDICTION.ipynb
 ├── DSA210_Project_Proposal_DERIN_ALACAL_35835.pdf
+├── Final_Report_Derin_Alacal.pdf
 ├── README.md
 ├── requirements.txt
 ├── outputs/
@@ -222,15 +264,21 @@ derinalc_dsa210/
 pip install -r requirements.txt
 ```
 
-2. Download the dataset from Kaggle and place the CSV file in your working directory.
+2. Make sure `CAR_DATA.csv` is available in your working directory.
 
-3. Open the notebook:
+3. Run the EDA and hypothesis-testing notebook:
 
 ```bash
 jupyter notebook DATA_COLLECTITON_EDA_HYPOTHESIS_TEST.ipynb
 ```
 
-4. Run all cells in order.
+4. Run the machine learning notebook:
+
+```bash
+jupyter notebook ML_METHODS_PRICE_PREDICTION.ipynb
+```
+
+5. Execute all cells in order.
 
 ---
 
@@ -247,7 +295,9 @@ outputs/tables/
 
 ## 10. Conclusion
 
-This project provides a data-driven analysis of used-car price formation in the Turkish second-hand market. The findings show that cosmetic attributes such as color may have a statistically detectable effect, but their practical importance is very limited compared with structural vehicle characteristics. Overall, the results support the project’s central expectation that cosmetic variables play only a minor role once the main determinants of vehicle price are taken into account.
+This project provides a data-driven analysis of used-car price formation in the Turkish second-hand market. The findings show that cosmetic attributes such as color may have a statistically detectable effect, but their practical importance is very limited compared with structural vehicle characteristics.
+
+Both the hypothesis-testing stage and the machine learning stage support the same overall conclusion: **color has at most a limited marginal role in used-car price formation**, while structural factors dominate both explanation and prediction.
 
 ---
 
@@ -278,60 +328,12 @@ Computer Science and Engineering
 - Data Enrichment  
 - Exploratory Data Analysis (EDA)  
 - Statistical Hypothesis Testing  
+- Machine Learning Analysis  
+- Final Report  
 - README and repository organization  
 
-## Machine Learning Methods
-
-In this stage, machine learning methods were applied to predict used-car prices using the cleaned dataset. The main objective was to compare a **baseline model** built only with structural vehicle characteristics and an **extended model** that additionally included the cosmetic variable **color**.
-
-Two model families were used:
-
-* **Linear Regression** as a benchmark model
-* **Random Forest Regressor** as the main non-linear machine learning model
-
-The target variable was the log-transformed price, and model performance was evaluated on a held-out test set using:
-
-* **MAE (Mean Absolute Error)**
-* **RMSE (Root Mean Squared Error)**
-* **R²**
-
-### Feature Sets
-
-**Baseline model features:**
-- year
-- log-transformed mileage
-- brand
-- series group
-- fuel type
-- transmission
-- body type group
-- seller type
-
-**Extended model features:**
-- all baseline features
-- color group
-
-### Results
-
-| Model | MAE | RMSE | R² |
-|------|------:|------:|------:|
-| Linear Regression - Baseline | 110,409.67 | 228,834.96 | 0.8625 |
-| Linear Regression - Extended | 110,484.17 | 228,551.40 | 0.8628 |
-| Random Forest - Baseline | 122,067.09 | 257,389.30 | 0.8260 |
-| Random Forest - Extended | 129,582.56 | 274,702.56 | 0.8018 |
-
-### Interpretation
-
-The machine learning results show that the **Linear Regression models outperformed the Random Forest models** on this dataset. The best overall performance was obtained by the **Linear Regression Extended** model in terms of RMSE and R², although the improvement over the baseline model was extremely small.
-
-Adding color to the Linear Regression model produced only a **marginal improvement** in predictive performance. The increase in R² was minimal, and the difference in error metrics was very small. This suggests that color may provide a small amount of additional information, but its practical contribution to price prediction remains limited.
-
-For the Random Forest models, adding color did not improve performance. In fact, the extended Random Forest model performed worse than the baseline version. This indicates that color does not provide stable predictive value in the tree-based model under the current feature representation and parameter settings.
-
-Overall, the ML results are consistent with the earlier statistical findings: **color may be statistically detectable, but its practical value in explaining or predicting used-car prices is weak compared with structural variables** such as brand, year, mileage, transmission, fuel type, and body type.
 ---
-![Feature Importance](outputs/figures/17_feature_importance.png)
-![Counterfactual Color Analysis](outputs/figures/18_counterfactual_color_analysis.png)
+
 ## Last Updated
 
 May 2026
