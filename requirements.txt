@@ -3,5 +3,6 @@ numpy
 matplotlib
 scipy
 statsmodels
+scikit-learn
 jupyter
 notebook
