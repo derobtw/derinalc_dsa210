@@ -1,6 +1,8 @@
 ## The Role of Cosmetic Attributes in Used-Car Price Formation: Evidence from the Turkish Second-Hand Market
 
 ---
+https://derobtw.github.io/derinalc_dsa210/
+---
 
 ## 1. Project Motivation
 
